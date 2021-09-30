@@ -14,8 +14,8 @@ impl<'a> StrTree<'a> {
     }
 }
 
-#[macro_export]
-macro_rules! str_tree_1 {
+#[allow(unused_macros)]
+macro_rules! str_tree_simple {
     ($name:expr => $($children:expr),+ $(,)? ) => {
         StrTree::new($name, vec!($($children,)+))
     };
@@ -25,20 +25,20 @@ macro_rules! str_tree_1 {
 }
 
 #[macro_export]
-macro_rules! str_tree_2 {
+macro_rules! str_tree {
     // starting point
     ( $e:expr $( => { $($rek:tt)* } )? ) => {
-        StrTree::new($e, str_tree_2!(@LIST {} {$($($rek)*)?}))
+        StrTree::new($e, str_tree!(@LIST {} {$($($rek)*)?}))
     };
 
     // recursive case
     (@LIST {$($done:expr),*} { $e:expr => {$($rek:tt)*} $(, $($tail:tt)* )? } ) => {
-        str_tree_2!(@LIST { $($done,)* StrTree::new($e, str_tree_2!(@LIST {} {$($rek)*})) } {$($($tail)*)?} )
+        str_tree!(@LIST { $($done,)* StrTree::new($e, str_tree!(@LIST {} {$($rek)*})) } {$($($tail)*)?} )
     };
 
     // simple case
     (@LIST {$($done:expr),*} { $e:expr $(, $($tail:tt)* )? } ) => {
-        str_tree_2!(@LIST { $($done,)* StrTree::new($e, vec!()) } {$($($tail)*)?} )
+        str_tree!(@LIST { $($done,)* StrTree::new($e, vec!()) } {$($($tail)*)?} )
     };
 
     // end of recursion
@@ -74,26 +74,26 @@ mod tests {
     
 
     #[test]
-    fn test_macro_1() {
+    fn test_macro_simple() {
         // simple flat case
-        let st = str_tree_1!("a");
+        let st = str_tree_simple!("a");
         assert_eq!(st, StrTree::new("a", vec!()));
 
         // trailing comma
-        let st = str_tree_1!("a" => str_tree_1!("b"), );
+        let st = str_tree_simple!("a" => str_tree_simple!("b"), );
         assert_eq!(st, StrTree::new("a", vec!(StrTree::new("b", vec!()))));
 
         // complete example
         
         let exp = gen_example_structure();
         
-        let macro_1 = str_tree_1!("a" => 
-            str_tree_1!("b"),
-            str_tree_1!("c" => 
-                str_tree_1!("d" => 
-                    str_tree_1!("e")
+        let macro_1 = str_tree_simple!("a" => 
+            str_tree_simple!("b"),
+            str_tree_simple!("c" => 
+                str_tree_simple!("d" => 
+                    str_tree_simple!("e")
                 )),
-            str_tree_1!("f")
+            str_tree_simple!("f")
         );
 
         assert_eq!(exp, macro_1);
@@ -101,21 +101,21 @@ mod tests {
     }
 
     #[test]
-    fn test_macro_2() {
+    fn test_macro() {
         // simple flat case
-        let st = str_tree_2!("a");
+        let st = str_tree!("a");
         assert_eq!(st, StrTree::new("a", vec!()));
 
         // empty braces
-        let st = str_tree_2!("a" => {});
+        let st = str_tree!("a" => {});
         assert_eq!(st, StrTree::new("a", vec!()));
 
         // no trailing comma
-        let st = str_tree_2!("a" => { "b" });
+        let st = str_tree!("a" => { "b" });
         assert_eq!(st, StrTree::new("a", vec!(StrTree::new("b", vec!()))));
 
         // trailing comma
-        let st = str_tree_2!("a" => { "b", "c", });
+        let st = str_tree!("a" => { "b", "c", });
         assert_eq!(st, StrTree::new("a", vec!(
             StrTree::new("b", vec!()),
             StrTree::new("c", vec!()),
@@ -125,7 +125,7 @@ mod tests {
         
         let exp = gen_example_structure();
 
-        let macro_2 = str_tree_2!(
+        let macro_2 = str_tree!(
             "a" => {
             "b",
             "c" => {
