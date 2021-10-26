@@ -2,8 +2,8 @@
 
 #[derive(Debug, PartialEq)]
 pub struct StrTree<'a> {
-    elmt: &'a str,
-    children: Vec<StrTree<'a>>
+    pub elmt: &'a str,
+    pub children: Vec<StrTree<'a>>
 }
 
 impl<'a> StrTree<'a> {
