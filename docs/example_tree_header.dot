@@ -1,0 +1,25 @@
+
+digraph D {
+  is [label = "\"is\""];
+  a1 [label = "\"a\""];
+  a2 [label = "\"a\""];
+
+
+  "\"this\"" -> {is, a1, "\"tree\""}
+
+  is -> {
+    "\"where\"",
+    "\"each\"",
+    "\"node\""
+  }
+
+  a1 -> {
+    
+    "\"contains\""
+  }
+  
+  "\"tree\"" -> {
+    a2
+    "\"string\""
+  }
+}
