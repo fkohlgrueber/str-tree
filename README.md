@@ -7,3 +7,15 @@ Image test:
 ![Example Tree](docs/example_tree.svg)
 
 Foo bar baz
+
+Same tree, different visualization:
+
+```
+      a
+    / | \
+   b  c  f
+      |
+      d
+      | 
+      e
+```
